@@ -1,1 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Personal Webpage</title>
+    <!-- Links your CSS file -->
+    <link rel="stylesheet" href="style.css"> 
+    <style>
+        body {
+            background-color: powderblue;
+            font-family: Arial;
+            color: black;
+            text-align: center;
+        }
+        h1 {
+            color: navy;
+            font-size: 36px;
+        }
+        div.header {
+            background-color: tomato;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .game-text2 {
+            white-space: pre-line; /* Preserves whitespace and line breaks */
+            height: 110px; /* Adjust the height as needed */
+            overflow-y: auto; /* Adds a vertical scrollbar if content exceeds height */
+            margin: auto; /* Centers the div horizontally */
+        }
+        .game-input2{
+            display: flex;
+        }
+        .user-input2 {
+            flex: 1; /* Takes up remaining space */
+            padding: 5px;
+            font-size: 16px;
+        }
+        .submit-btn2 {
+            padding: 5px 10px;
+            font-size: 16px;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Log-in Page for My Personal Webpage</h1>
+    <br>
+    <center>
+        <div id="game-text2" class="game-text2"></div>
+        <input id="user-input2" class="user-input2" type="text" placeholder="Username">
+        <button id="submit-btn2" class="submit-btn2">Submit</button>
+    </div></center>
 
+    <script src="login.js"></script>
+    <br>
+    <a id="main-link" href="index2.html" style="display:none;">
+        <button>Enter Main Page</button>
+    </a>
+</body>
+</html>
