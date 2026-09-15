@@ -2,51 +2,64 @@ const gameText = document.getElementById('game-text2');
 const userInput = document.getElementById('user-input2');
 const submitBtn = document.getElementById('submit-btn2');
 
-let currentStep = "askUsername"; // Track the current step of the login process
-let username = ""; // Store the username
+// Get references to our new overlay elements
+const overlay = document.getElementById('game-over-overlay');
+const codecText = document.getElementById('codec-text');
+const mgsTitle = document.getElementById('mgs-title');
+
+let currentStep = "askUsername"; 
+let username = ""; 
 
 submitBtn.addEventListener('click', async () => {
     const input = userInput.value.trim();
-    userInput.value = ''; // Clear the input field
+    userInput.value = ''; 
 
     if (currentStep === "askUsername") {
         username = input;
 
         if (username === "student" || username === "teacher") {
             print("Thank you.");
-            await sleep(1000); // Wait for 1 second
+            await sleep(1000); 
             print("Please input your password.");
-            currentStep = "askPassword"; // Move to the next step
+            currentStep = "askPassword"; 
         } else {
             print("Incorrect username. Please refresh page and try again.");
-            currentStep = "end"; // End the process
+            currentStep = "end"; 
         }
     } else if (currentStep === "askPassword") {
         const password1 = input;
         if (username === "student" && password1 === "123456") {
             print("You are logged in as a student.");
-            document.getElementById('main-link').style.display = 'block'; // Show the link to the main page
+            document.getElementById('main-link').style.display = 'block'; 
         } else if (username === "teacher" && password1 === "qwerty") {
             print("You are logged in as a teacher.");
-            document.getElementById('main-link').style.display = 'block'; // Show the link to the main page
+            document.getElementById('main-link').style.display = 'block'; 
         } else {
-            // Metal Gear Solid Game Over Sequence
-            print("Incorrect password.");
-            await sleep(1000);
-            print(`${username.toUpperCase()}? ${username.toUpperCase()}?!`);
+            // 1. Instantly trigger the all-black screen layout
+            overlay.style.display = 'flex';
+            setTimeout(() => overlay.style.opacity = '1', 10); // Trigger CSS fade transition
+            
+            // 2. Pure black silence for 3 seconds as requested
+            await sleep(3000);
+            
+            // 3. The panicked radio call pops up in big font
+            codecText.innerText = `${username.toUpperCase()}? ${username.toUpperCase()}?!`;
+            
+            // 4. Wait another 1.5 seconds before the final blow
             await sleep(1500);
-            print("GAME OVER");
+            
+            // 5. Massive red GAME OVER text appears
+            mgsTitle.innerText = "GAME OVER";
         };
-        currentStep = "end"; // End the process after password check
+        currentStep = "end"; 
     } else if (currentStep === "end") {
         print("Session finished. Refresh page to try again.");
     }
 });
 
-
 function print(text) {
     gameText.innerText += text + '\n';
-    gameText.scrollTop = gameText.scrollHeight; // Scroll to the bottom
+    gameText.scrollTop = gameText.scrollHeight; 
 };
 
 function sleep(ms) {
