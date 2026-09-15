@@ -42,6 +42,47 @@
             margin-left: 5px;
             cursor: pointer;
         }
+        /* The full-screen black canvas */
+#game-over-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    z-index: 9999; /* Sits on top of everything */
+    
+    /* Center the text perfectly */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+    /* MGS Style Typography */
+    font-family: 'Arial Black', 'Impact', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out; /* Smooth fade-in */
+}
+
+/* Container for the dramatic radio call text */
+#codec-text {
+    color: #ffffff;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* The massive GAME OVER text */
+#mgs-title {
+    color: #ff0000; /* Classic dark red */
+    font-size: 6rem;
+    font-weight: 900;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
     </style>
 </head>
 <body>
@@ -59,5 +100,10 @@
     <a id="main-link" href="index2.html" style="display:none;">
         <button>Enter Main Page</button>
     </a>
+    <div id="game-over-overlay" style="display: none;">
+    <div id="codec-text"></div>
+    <div id="mgs-title"></div>
+</div>
+
 </body>
 </html>
