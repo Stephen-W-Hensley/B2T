@@ -207,3 +207,61 @@ img {
     width: 30%;
     text-align: center;
 }
+
+.table-style1 {
+  width: 80%;
+  margin: 20px auto;
+  border: 2px solid navy;
+}
+
+.table-style1 th, .table-style1 td {
+  border: 1px solid navy;
+  padding: 10px;
+  text-align: center;
+}
+
+.table-style1 th {
+  background-color: lightblue;
+}
+
+.table-style2 {
+  width: 60%;
+  margin: 20px auto;
+  border-collapse: collapse;
+  border: 2px solid darkgreen;
+}
+
+.table-style2 th, .table-style2 td {
+  border: 1px solid darkgreen;
+  padding: 10px;
+  text-align: center;
+}
+
+.table-style2 th {
+  background-color: lightgreen;
+}
+
+div.mycontainer {
+  width: 66%;
+  overflow: auto;
+}
+
+div.mycontainer div {
+  width: 50%;
+  float: left;
+}
+
+.list-style2 {
+  list-style-type: square;
+  color: darkgreen;
+  text-align: left;
+  margin-left: 20px;
+}
+
+.video {
+  width: 35%;
+  margin: 10px auto;
+  text-align: center;
+  border: 3px solid green;
+  background-color: darkturquoise;
+}

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Adventure Game</title>
+</head>
+<body>
+<h1>Adventure Game</h1>
+
+<script>
+// Sleep function
+function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Greeting
+async function greet() {
+    alert("Hello, adventurer! Welcome to the land of JavaScript.");
+    await wait(1000);
+    let name = prompt("What is your name?");
+    alert(`Nice to meet you, ${name}!`);
+    await wait(1000);
+    return name;
+}
+
+// Choose Path
+async function choosePath() {
+    alert("You find yourself at a crossroads.\n1. Enter the dark forest.\n2. Walk along the beach.");
+    let choice = prompt("Enter 1 or 2:");
+    await wait(1000);
+
+    if (choice === "1") {
+        await forestPath();
+    } else if (choice === "2") {
+        await beachPath();
+    } else {
+        alert("That's not a valid option!");
+        await home();
+    }
+}
+
+async function home() {
+    alert("You arrive home safely, but still want to do something.");
+    alert("1. Enter the dark forest.\n2. Walk along the beach.");
+    let choice2 = prompt("Enter 1 or 2:");
+
+    if (choice2 === "1") {
+        await forestPath();
+    } else if (choice2 === "2") {
+        await beachPath();
+    } else {
+        alert("That's not a valid option!");
+        await home();
+    }
+}
+
+// Forest Path
+async function forestPath() {
+    alert("You enter the dark forest. It's spooky and quiet.");
+    await wait(2000);
+
+    alert("Suddenly, you hear a noise behind you!");
+    await wait(2000);
+
+    let action = prompt("Do you want to run or stay?\nType 'run' or 'stay':");
+
+    if (action === "run") {
+        let outcomes = [
+            "You trip over a root but manage to get up and run away.",
+            "You run as fast as you can and escape safely.",
+            "You run as fast as you can, but you don’t see the giant hole, and you fall in."
+        ];
+
+        let outcome = outcomes[Math.floor(Math.random() * outcomes.length)];
+        alert(outcome);
+
+        if (outcome.includes("giant hole")) {
+            alert("You are unharmed, but no one comes to help.");
+        } else {
+            alert("You make your way back home and have a cup of tea.");
+        }
+
+    } else if (action === "stay") {
+        let encounters = [
+            "A friendly rabbit appears! It guides you out safely.",
+            "A shadowy figure appears... but it's just a deer."
+        ];
+
+        alert(encounters[Math.floor(Math.random() * encounters.length)]);
+    } else {
+        alert("Invalid action, but nothing happens. You walk back safely.");
+    }
+}
+
+// Beach Path
+async function beachPath() {
+    alert("You walk along the beach. The waves are calming.");
+    await wait(2000);
+
+    let action = prompt("You see a shiny object. Pick it up?\nType 'yes' or 'no':");
+
+    if (action === "yes") {
+        let treasures = [
+            "It's a golden coin!",
+            "It's a pretty piece of sea glass."
+        ];
+        alert(treasures[Math.floor(Math.random() * treasures.length)]);
+    } else if (action === "no") {
+        alert("You walk past it and enjoy the waves.");
+    } else {
+        alert("You hesitate, but nothing happens.");
+    }
+}
+
+// Start
+async function startAdventure() {
+    let name = await greet();
+    alert(`${name}, your adventure begins now!`);
+    await wait(1000);
+    await choosePath();
+}
+
+startAdventure();
+
+</script>
+</body>
+</html>
