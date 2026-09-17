@@ -134,25 +134,6 @@ div.header {
   }
 }
 
-body {
-  background-color: powderblue;
-  font-family: Arial;
-  color: black;
-  text-align: center;
-}
-
-div.header {
-  background-color: tomato;
-  color: white;
-  text-align: center;
-  padding: 20px;
-}
-
-h1 {
-  color: navy;
-  font-size: 36px;
-}
-
 p {
   font-size: 18px;
 }

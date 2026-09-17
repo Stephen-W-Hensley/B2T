@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Legend of Hyrule - Retro Adventure</title>
+  <style>
+    body {
+      background-color: #111;
+      color: #fff;
+      font-family: 'Courier New', Courier, monospace;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: #ffd700;
+      margin-bottom: 5px;
+    }
+    .hud {
+      display: flex;
+      justify-content: space-around;
+      max-width: 512px;
+      margin: 0 auto 10px auto;
+      background: #222;
+      padding: 10px;
+      border: 2px solid #555;
+    }
+    canvas {
+      background-color: #000;
+      border: 4px solid #8b0000;
+      image-rendering: pixelated;
+      display: block;
+      margin: 0 auto;
+    }
+    .controls-hint {
+      margin-top: 15px;
+      color: #aaa;
+      font-size: 14px;
+    }
+    .btn-back {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-back:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>The Hero's Quest</h1>
+  
+  <div class="hud">
+    <div>HEARTS: <span id="hp-display" style="color: red;">❤️❤️❤️</span></div>
+    <div>TRIFORCE: <span id="triforce-display">0/1</span></div>
+    <div>KEYS: <span id="key-display">0</span></div>
+  </div>
+
+  <canvas id="gameCanvas" width="512" height="448"></canvas>
+
+  <div class="controls-hint">
+    <strong>Controls:</strong> Arrow Keys / WASD = Move | <strong>Spacebar</strong> = Swing Sword
+  </div>
+
+  <a href="index2.html" class="btn-back">Return to Main Page</a>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const TILE_SIZE = 32;
+    const ROWS = 14;
+    const COLS = 16;
+
+    // Game State
+    let player = {
+      x: 2 * TILE_SIZE,
+      y: 2 * TILE_SIZE,
+      width: 24,
+      height: 24,
+      speed: 3,
+      hp: 3,
+      maxHp: 3,
+      keys: 0,
+      hasTriforce: false,
+      attacking: false,
+      attackTimer: 0,
+      dir: 'down'
+    };
+
+    // Map Grid Layout
+    // 1: Wall (Tree/Rock), 0: Floor (Grass), 2: Door/Lock, 3: Key, 4: Triforce, 5: Enemy
+    const map = [
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,1,0,5,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,1,1,1,1,1,0,1,1,1,0,1],
+      [1,1,1,0,1,1,0,0,0,0,0,0,0,1,0,1],
+      [1,3,0,0,0,1,0,1,1,1,1,1,0,1,0,1],
+      [1,1,1,0,1,1,0,1,4,0,0,1,0,1,0,1],
+      [1,0,0,0,0,0,0,1,0,0,0,1,0,1,0,1],
+      [1,0,1,1,1,1,0,1,1,2,1,1,0,1,0,1],
+      [1,0,1,0,0,1,0,0,0,0,0,0,0,1,0,1],
+      [1,0,1,0,5,1,0,1,1,1,1,1,1,1,0,1],
+      [1,0,0,0,0,1,0,0,0,5,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+    ];
+
+    let enemies = [];
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        if (map[r][c] === 5) {
+          enemies.push({ x: c * TILE_SIZE, y: r * TILE_SIZE, dir: 1, timer: 0, alive: true });
+          map[r][c] = 0; // Clear tile
+        }
+      }
+    }
+
+    const keysPressed = {};
+    window.addEventListener("keydown", e => { keysPressed[e.key] = true; });
+    window.addEventListener("keyup", e => { keysPressed[e.key] = false; });
+
+    function update() {
+      if (player.hp <= 0) return;
+
+      // Handle Attack
+      if (keysPressed[" "] && !player.attacking) {
+        player.attacking = true;
+        player.attackTimer = 15;
+      }
+      if (player.attacking) {
+        player.attackTimer--;
+        if (player.attackTimer <= 0) player.attacking = false;
+      }
+
+      // Movement Logic
+      let dx = 0, dy = 0;
+      if (keysPressed["ArrowLeft"] || keysPressed["a"]) { dx = -player.speed; player.dir = 'left'; }
+      if (keysPressed["ArrowRight"] || keysPressed["d"]) { dx = player.speed; player.dir = 'right'; }
+      if (keysPressed["ArrowUp"] || keysPressed["w"]) { dy = -player.speed; player.dir = 'up'; }
+      if (keysPressed["ArrowDown"] || keysPressed["s"]) { dy = player.speed; player.dir = 'down'; }
+
+      // Axis collision checks
+      if (canMove(player.x + dx, player.y, player.width, player.height)) player.x += dx;
+      if (canMove(player.x, player.y + dy, player.width, player.height)) player.y += dy;
+
+      // Item Pickups & Doors
+      let centerCol = Math.floor((player.x + player.width/2) / TILE_SIZE);
+      let centerRow = Math.floor((player.y + player.height/2) / TILE_SIZE);
+      let currentTile = map[centerRow][centerCol];
+
+      if (currentTile === 3) { // Key
+        player.keys++;
+        map[centerRow][centerCol] = 0;
+        document.getElementById("key-display").innerText = player.keys;
+      } else if (currentTile === 4) { // Triforce
+        player.hasTriforce = true;
+        map[centerRow][centerCol] = 0;
+        document.getElementById("triforce-display").innerText = "1/1 (VICTORY!)";
+        alert("You found the Triforce! You win!");
+      }
+
+      // Enemy Updates
+      enemies.forEach(enemy => {
+        if (!enemy.alive) return;
+        enemy.timer++;
+        if (enemy.timer > 40) {
+          enemy.dir = Math.floor(Math.random() * 4);
+          enemy.timer = 0;
+        }
+        let edx = 0, edy = 0;
+        if (enemy.dir === 0) edy = -1;
+        if (enemy.dir === 1) edy = 1;
+        if (enemy.dir === 2) edx = -1;
+        if (enemy.dir === 3) edx = 1;
+
+        if (canMove(enemy.x + edx, enemy.y + edy, 24, 24)) {
+          enemy.x += edx;
+          enemy.y += edy;
+        }
+
+        // Sword Collision
+        if (player.attacking) {
+          let attackBox = getAttackBox();
+          if (isColliding(attackBox, { x: enemy.x, y: enemy.y, width: 24, height: 24 })) {
+            enemy.alive = false;
+          }
+        }
+
+        // Player-Enemy Collision
+        if (isColliding({ x: player.x, y: player.y, width: player.width, height: player.height },
+                        { x: enemy.x, y: enemy.y, width: 24, height: 24 })) {
+          player.hp--;
+          updateHud();
+          player.x = 2 * TILE_SIZE; // Knockback to start
+          player.y = 2 * TILE_SIZE;
+        }
+      });
+    }
+
+    function canMove(nx, ny, w, h) {
+      let points = [
+        { x: nx, y: ny },
+        { x: nx + w, y: ny },
+        { x: nx, y: ny + h },
+        { x: nx + w, y: ny + h }
+      ];
+
+      for (let p of points) {
+        let col = Math.floor(p.x / TILE_SIZE);
+        let row = Math.floor(p.y / TILE_SIZE);
+
+        if (row < 0 || row >= ROWS || col < 0 || col >= COLS) return false;
+        let tile = map[row][col];
+        if (tile === 1) return false; // Wall
+        if (tile === 2) { // Locked Door
+          if (player.keys > 0) {
+            player.keys--;
+            map[row][col] = 0;
+            document.getElementById("key-display").innerText = player.keys;
+            return true;
+          }
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function getAttackBox() {
+      let range = 20;
+      if (player.dir === 'up') return { x: player.x, y: player.y - range, width: player.width, height: range };
+      if (player.dir === 'down') return { x: player.x, y: player.y + player.height, width: player.width, height: range };
+      if (player.dir === 'left') return { x: player.x - range, y: player.y, width: range, height: player.height };
+      if (player.dir === 'right') return { x: player.x + player.width, y: player.y, width: range, height: player.height };
+    }
+
+    function isColliding(a, b) {
+      return a.x < b.x + b.width && a.x + a.width > b.x &&
+             a.y < b.y + b.height && a.y + a.height > b.y;
+    }
+
+    function updateHud() {
+      let hearts = "";
+      for (let i = 0; i < player.hp; i++) hearts += "❤️";
+      document.getElementById("hp-display").innerText = hearts || "DEAD";
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Render Map
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          let tile = map[r][c];
+          if (tile === 1) { ctx.fillStyle = "#2e7d32"; ctx.fillRect(c*TILE_SIZE, r*TILE_SIZE, TILE_SIZE, TILE_SIZE); } // Trees/Rocks
+          else if (tile === 2) { ctx.fillStyle = "#8d6e63"; ctx.fillRect(c*TILE_SIZE, r*TILE_SIZE, TILE_SIZE, TILE_SIZE); } // Door
+          else if (tile === 3) { ctx.fillStyle = "#ffd700"; ctx.fillRect(c*TILE_SIZE+10, r*TILE_SIZE+10, 12, 12); } // Key
+          else if (tile === 4) { // Triforce
+            ctx.fillStyle = "#ffff00";
+            ctx.beginPath();
+            ctx.moveTo(c*TILE_SIZE + 16, r*TILE_SIZE + 4);
+            ctx.lineTo(c*TILE_SIZE + 4, r*TILE_SIZE + 28);
+            ctx.lineTo(c*TILE_SIZE + 28, r*TILE_SIZE + 28);
+            ctx.fill();
+          } else {
+            ctx.fillStyle = "#81c784"; ctx.fillRect(c*TILE_SIZE, r*TILE_SIZE, TILE_SIZE, TILE_SIZE); // Grass
+          }
+        }
+      }
+
+      // Render Player (Link)
+      ctx.fillStyle = "#00e676";
+      ctx.fillRect(player.x, player.y, player.width, player.height);
+
+      // Render Sword Attack
+      if (player.attacking) {
+        let ab = getAttackBox();
+        ctx.fillStyle = "#e0e0e0";
+        ctx.fillRect(ab.x, ab.y, ab.width, ab.height);
+      }
+
+      // Render Enemies (Octorok/Stalfos style)
+      enemies.forEach(e => {
+        if (!e.alive) return;
+        ctx.fillStyle = "#d50000";
+        ctx.fillRect(e.x, e.y, 24, 24);
+      });
+    }
+
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    gameLoop();
+  </script>
+</body>
+</html>

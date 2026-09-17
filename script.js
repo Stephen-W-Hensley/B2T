@@ -32,14 +32,16 @@ submitBtn.addEventListener("click", async () => {
     }
   } else if (currentStep === "askPassword") {
     const password1 = input;
-    if (username === "student" && password1 === "123456") {
-      print("You are logged in as a student.");
-      document.getElementById("main-link").style.display = "block";
-      currentStep = "end";
-    } else if (username === "teacher" && password1 === "qwerty") {
-      print("You are logged in as a teacher.");
-      document.getElementById("main-link").style.display = "block";
-      currentStep = "end";
+    if (username === "student" && password1 === "123456") { 
+      print("You are logged in as a student."); 
+      // Reveal the container holding both links
+      document.getElementById("layout-links").style.display = "block"; 
+      currentStep = "end"; 
+    } else if (username === "teacher" && password1 === "qwerty") { 
+      print("You are logged in as a teacher."); 
+      // Reveal the same container holding both links
+      document.getElementById("layout-links").style.display = "block"; 
+      currentStep = "end"; 
     } else {
       currentStep = "end";
 
