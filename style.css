@@ -222,21 +222,78 @@ img {
   background-color: lightgreen;
 }
 
+/* 1. Main Container: Switched to Flexbox for bulletproof side-by-side alignment */
 div.mycontainer {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;              /* Creates clean spacing between the columns */
   width: 66%;
-  overflow: auto;
+  margin: 30px auto;
+  box-sizing: border-box;
 }
 
-div.mycontainer div {
-  width: 50%;
-  float: left;
+/* 2. Columns: Clean, modern cards replacing old lightcyan/aquamarine backgrounds */
+div.mycontainer > div {
+  flex: 1;                /* Forces both columns to stay perfectly equal in width */
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04); /* Soft, premium shadow effect */
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease;
 }
 
+/* Interactive lift effect when hovering over a card */
+div.mycontainer > div:hover {
+  transform: translateY(-3px);
+}
+
+/* 3. Custom Card Themes (Warm Cream for Food, Cool Mint for Drinks) */
+div.mycontainer > div:first-of-type {
+  background: linear-gradient(135deg, #fffcf6 0%, #fff8e7 100%);
+}
+div.mycontainer > div:last-of-type {
+  background: linear-gradient(135deg, #f4fbfb 0%, #e8f7f7 100%);
+}
+
+/* 4. Typography Upgrades */
+div.mycontainer h2 {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 20px;
+  color: #2d3748;
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+
+div.mycontainer li {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+/* 5. Preserving and refining your list styles */
 .list-style2 {
   list-style-type: square;
   color: darkgreen;
   text-align: left;
   margin-left: 20px;
+  padding-left: 0;
+}
+
+.list-style1 {
+  list-style-type: square;
+  color: rgb(255, 0, 0);
+  text-align: left;
+  margin-left: 20px;
+  padding-left: 0;
+}
+
+/* 6. Responsive Breakpoint: Automatically stacks vertically on mobile screens */
+@media (max-width: 768px) {
+  div.mycontainer {
+    width: 90%;          /* Gives more room on smaller screens */
+    flex-direction: column;
+  }
 }
 
 .video {
@@ -245,4 +302,260 @@ div.mycontainer div {
   text-align: center;
   border: 3px solid green;
   background-color: darkturquoise;
+}
+
+/* Card container using The Verge's iconic electric purple gradient */
+.vergecast-card {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  height: 200px;
+  text-decoration: none;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(83, 28, 211, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+  /* Pure CSS Background inspired by The Vergecast artwork */
+  background: linear-gradient(135deg, #531cd3 0%, #2b0080 100%);
+  background-size: cover;
+  background-position: center;
+}
+
+/* Hover effects */
+.vergecast-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(83, 28, 211, 0.35);
+}
+
+/* Flexbox layout to align the text beautifully inside the card */
+.card-overlay {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.25); /* Slight dark overlay to maximize text readability */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Small label above the main title */
+.podcast-tag {
+  background-color: #ff4c24; /* The Verge's iconic hyper orange */
+  color: #ffffff;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+/* Main typography layout using high-contrast bold lettering */
+.card-title {
+  color: #ffffff;
+  font-family: 'Arial Black', sans-serif;
+  font-size: 32px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  text-align: center;
+  line-height: 1.1;
+}
+
+/* Specific styling for the brand word block */
+.accent-color {
+  color: #ff4c24;
+}
+
+/* Base layout for the modern gaming card */
+.gamer-contact-card {
+  display: inline-flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 380px;
+  padding: 24px 16px;
+  background: linear-gradient(135deg, #1e1e2f 0%, #111119 100%);
+  border: 2px solid #3f3f5a;
+  border-radius: 14px;
+  text-decoration: none;
+  overflow: hidden;
+  box-sizing: border-box;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Semitransparent vector controller positioned behind the text */
+.controller-bg {
+  position: absolute;
+  width: 75%;
+  height: auto;
+  color: rgba(168, 85, 247, 0.09); /* Subtle neon purple tint */
+  transform: rotate(-10deg);
+  transition: all 0.3s ease;
+  pointer-events: none; /* Allows text selection through the graphic */
+}
+
+/* Alignment container for the text layouts */
+.card-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+/* High contrast typography for the email address */
+.email-text {
+  color: #ffffff;
+  font-family: 'Courier New', Courier, monospace; /* Clean, tech/dev aesthetic */
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  word-break: break-all;
+  text-align: center;
+}
+
+/* Micro-badge underneath the email */
+.action-tag {
+  color: #00ffcc; /* Vibrant neon teal accent */
+  font-family: 'Arial Black', sans-serif;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+/* Immersive hover animations */
+.gamer-contact-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: #00ffcc;
+  box-shadow: 0 10px 30px rgba(0, 255, 204, 0.15);
+}
+
+/* Controller lights up and scales on card hover */
+.gamer-contact-card:hover .controller-bg {
+  color: rgba(0, 255, 204, 0.14);
+  transform: rotate(0deg) scale(1.1);
+}
+
+/* Glow effect on the lower accent tag */
+.gamer-contact-card:hover .action-tag {
+  opacity: 1;
+  text-shadow: 0 0 8px rgba(0, 255, 204, 0.6);
+}
+
+/* Container rules adjusted to isolate fonts and use clean spacing */
+/* Layout Container: Stripped the middle spacer to make them cleanly side-by-side */
+.grid-container1 {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Force exactly two even columns side-by-side */
+  gap: 32px;
+  background-color: #0f111a; /* Dark sleek container background to make neon pop */
+  padding: 32px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Base Neon Card Config */
+.dashboard-card-neon {
+  padding: 32px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  cursor: pointer;
+}
+
+/* Theme 1: Electric Purple (Bright background, dark text) */
+.theme-purple {
+  background-color: #e0b0ff; /* Vivid Bright Orchid/Purple */
+  color: #1a0033; /* Dark Deep Purple text */
+  box-shadow: 0 8px 24px rgba(224, 176, 255, 0.2);
+}
+
+/* Theme 2: Vaporwave Teal (Bright background, dark text) */
+.theme-teal {
+  background-color: #00f5d4; /* Super Radiant Neon Teal */
+  color: #002b24; /* Dark Deep Teal text */
+  box-shadow: 0 8px 24px rgba(0, 245, 212, 0.2);
+}
+
+/* HOVER STATES: Invert dynamically to dark background with bright text */
+.theme-purple:hover {
+  background-color: #1a0033; /* Dark Deep Purple */
+  color: #e0b0ff; /* Bright Orchid text */
+  box-shadow: 0 12px 32px rgba(224, 176, 255, 0.4);
+  transform: translateY(-4px);
+}
+
+.theme-teal:hover {
+  background-color: #002b24; /* Dark Deep Teal */
+  color: #00f5d4; /* Super Radiant Neon Teal text */
+  box-shadow: 0 12px 32px rgba(0, 245, 212, 0.4);
+  transform: translateY(-4px);
+}
+
+/* Title adjustments that adapt to the hover color flips */
+.dashboard-title-neon {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-top: 0;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid currentColor; /* Automatically matches the active text color */
+}
+
+/* Table Setup */
+.dashboard-table-neon {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Table Headers inheriting parents colors natively */
+.dashboard-table-neon th {
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  padding: 12px 8px;
+  border-bottom: 2px solid currentColor;
+}
+
+/* Table Data Rows inheriting colors natively */
+.dashboard-table-neon td {
+  padding: 16px 8px;
+  border-bottom: 1px solid currentColor;
+  opacity: 0.9; /* Slight styling contrast from header */
+}
+
+/* Clean up last border */
+.dashboard-table-neon tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Alignment Configurations */
+.dashboard-table-neon th:first-child,
+.dashboard-table-neon td:first-child {
+  text-align: left;
+}
+
+.dashboard-table-neon th:last-child,
+.dashboard-table-neon td:last-child {
+  text-align: right;
+}
+
+/* Mobile Responsive Override */
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: 1fr; /* Stack vertically on smaller screens safely */
+  }
 }
